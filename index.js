@@ -64,16 +64,3 @@ module.exports = () => {
 			console.log(resultsOutput);
 	};
 };
-
-function shallowMerge(obj1, obj2) {
-	var mergedObj = {};
-
-	Object.keys(obj1).forEach(function(key) {
-		if (!obj2[key]) mergedObj[key] = obj1[key];
-		else mergedObj[key] = obj2[key];
-	});
-
-	return mergedObj;
-};
-
-module.exports = reporter;
