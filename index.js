@@ -1,6 +1,7 @@
 var fs = require('fs')
 
 var defaultOpts = {
+	output: 'file',
 	file: 'jasmine-test-results.json',
 	beautify: true,
 	indentationLevel: 4 // used if beautify === true
@@ -25,8 +26,11 @@ function reporter(opts) {
 		var resultsOutput = options.beautify ?
 			JSON.stringify(masterResults, null, options.indentationLevel) :
 			JSON.stringify(masterResults);
-
-		fs.writeFileSync(options.file, resultsOutput);
+		
+		if (options.file === 'file')
+			fs.writeFileSync(options.file, resultsOutput);
+		else if (options.file === 'screen')
+			console.log(resultsOutput);
 	};
 };
 
