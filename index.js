@@ -1,16 +1,47 @@
 var fs = require('fs')
 
-var defaultOpts = {
-	output: 'file',
-	file: 'jasmine-test-results.json',
-	beautify: true,
-	indentationLevel: 4 // used if beautify === true
-};
 
-function reporter(opts) {
-	var options = shallowMerge(defaultOpts, typeof opts === 'object' ? opts : {});
+module.exports = () => {
+
+	const defaultConfig = {
+		output: 'file',
+		file: 'jasmine-test-results.json',
+		beautify: true,
+		indentationLevel: 4 // used if beautify === true
+	};
+
 	var specResults = [];
 	var masterResults = Object.create(null);
+
+	class JasmineJsonTestReporter{
+		constructor(instanceJasmine, optionalConfigInit) {
+			this.jasmineJsonTestReporter = _.merge(
+                {
+                    jasmine: instanceJasmine,
+                    config: defaultConfig,
+                    data: {
+                        curSpecCount: 0,
+                        disabledCount: 0,
+                        totalSpecsDefined: 0
+                    }
+                },
+                {
+                    config: optionalConfigInit
+                }
+            );
+
+            const config = this.jasmineJsonTestReporter.config;
+            const maxValueLen = Object.keys(config.statusDisplay)
+                .reduce((currentLen, key) => config.statusDisplay[key].length > currentLen ? config.statusDisplay[key].length : currentLen, 0);
+
+            config.statusPortionIndentStr = ' '.repeat(maxValueLen);
+
+            Object.keys(config.statusDisplay)
+                .forEach((key) => {
+                    config.statusDisplayPadded[key] = rightPad(config.statusDisplay[key], config.statusPortionIndentStr);
+			});
+		}
+	}
 
 	this.suiteDone = function(suite) {
 		suite.specs = specResults;
